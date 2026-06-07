@@ -1835,119 +1835,109 @@ if (toggleCheckbox && commentOverlay) {
 
 async function loadLeaderboard(){
 
-    const listContainer =
-    document.getElementById(
-        "leaderboardList"
-    );
+const listContainer =
+document.getElementById(
+    "leaderboardList"
+);
 
-    if(!listContainer) return;
+if(!listContainer) return;
 
-    const { data, error } =
-    await db
-    .from("leaderboard")
-    .select("*")
-    .eq(
-        "date",
-        getToday()
-    );
+const { data, error } =
+await db
+.from("leaderboard")
+.select("*")
+.eq(
+    "date",
+    getToday()
+);
 
-    if(error){
+if(error){
 
-        console.error(error);
+    console.error(error);
 
-        return;
+    return;
 
-    }
+}
 
-    if(!data.length){
-
-        listContainer.innerHTML =
-        `
-        <div class="no-rank-yet">
-            No ranks recorded today 💙
-        </div>
-        `;
-
-        return;
-
-    }
-
-    data.sort((a,b)=>{
-
-        if(
-            b.luck !== a.luck
-        ){
-
-            return b.luck - a.luck;
-
-        }
-
-        return a.timestamp - b.timestamp;
-
-    });
-
-    const top42 =
-    data.slice(0,42);
+if(!data.length){
 
     listContainer.innerHTML =
-    top42.map(
-    (player,index)=>{
+    `
+    <div class="no-rank-yet">
+        No ranks recorded today 💙
+    </div>
+    `;
 
-        const rank =
-        index + 1;
+    return;
 
-        const medal =
-        rank === 1
-        ? "🥇"
-        : rank === 2
-        ? "🥈"
-        : rank === 3
-        ? "🥉"
-        : "#" + rank;
+}
 
-        const fireClass =
-        rank <= 6
-        ? `rank-fire top-${rank}-fire`
-        : "";
+data.sort((a,b)=>{
 
-        return `
+    if(
+        b.luck !== a.luck
+    ){
 
-        <div class="rank-item ${fireClass}">
+        return b.luck - a.luck;
 
-            <div class="rank-left">
+    }
 
-                <span class="rank-number">
-                    ${medal}
-                </span>
+    return a.timestamp - b.timestamp;
 
-                <span class="rank-name">
-                    ${player.name}
-                </span>
+});
 
-                <span class="rank-streak">
-                    🔥 ${player.streak}
-                </span>
+const top10 =
+data.slice(0,10);
 
-            </div>
+listContainer.innerHTML =
+top10.map(
+(player,index)=>{
 
-            <div class="rank-right">
+    const rank =
+    index + 1;
 
-                <span class="rank-luck">
-                    ✨ ${player.luck}%
-                </span>
+    const medal =
+    rank === 1
+    ? "🥇"
+    : rank === 2
+    ? "🥈"
+    : rank === 3
+    ? "🥉"
+    : "#" + rank;
 
-                <span class="rank-time">
-                    ${player.time}
-                </span>
+    const fireClass =
+    rank <= 3
+    ? `rank-fire top-${rank}-fire`
+    : "";
 
-            </div>
+    return `
 
+    <div class="rank-item ${fireClass}">
+        <div class="rank-left">
+            <span class="rank-number">
+                ${medal}
+            </span>
+            <span class="rank-name">
+                ${player.name}
+            </span>
+            <span class="rank-streak">
+                🔥 ${player.streak}
+            </span>
         </div>
 
-        `;
+        <div class="rank-right">
 
-    })
-    .join("");
+            <span class="rank-luck">
+                ✨ ${player.luck}%
+            </span>
+            <span class="rank-time">
+                ${player.time}
+            </span>
+        </div>
+    </div>
+    `;
+})
+.join("");
 
 }
 
@@ -2208,7 +2198,7 @@ document.getElementById("sendCommentBtn").addEventListener("click", async () => 
 function startCooldown() {
     const btn = document.getElementById("sendCommentBtn");
     const timerText = document.getElementById("cooldownTimer");
-    let count = 15;
+    let count = 10;
 
     btn.disabled = true;
     timerText.textContent = `CD: ${count}s`;
@@ -2232,7 +2222,7 @@ function startCooldown() {
 function startCooldown() {
     const btn = document.getElementById("sendCommentBtn");
     const timerText = document.getElementById("cooldownTimer");
-    let count = 15;
+    let count = 10;
 
     btn.disabled = true;
     timerText.textContent = `CD: ${count}s`;

@@ -158,11 +158,11 @@ body {
     will-change: background, border-color, box-shadow; /* Báo trước cho phần cứng xử lý mượt mà */
 }
 
-/* 🛑 ÉP ĐÈ HOVER CHỐNG NHÍCH: Giữ im vị trí khi di chuột vào panel, chỉ phát sáng viền */
+/* 🛑 ÉP ĐÈ HOVER CHỐNG NHÍCH: Giữ im vị trí khi di chuột vào panel, chỉ phát sáng viền 
 .actions:hover {
     transform: none !important; 
     margin-top: 80px !important; 
-}
+}*/
 
 
 .actions::before{
@@ -1187,10 +1187,8 @@ main,
 .leaderboard-container {
     width: 420px;
     max-width: 100%;
-    /* 🌟 ĐÃ SỬA CHÍ MẠNG: Dùng margin-top để đẩy bảng rank cách mép dưới chiếc Card đúng 30px thông thoáng */
     margin: 30px auto 0 auto !important; 
-    background: rgba(30, 41, 59, 0.55) !important; /* Tăng độ đậm nền một chút để nổi bật chữ */
-    
+    background: rgba(30, 41, 59, 0.55) !important; 
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(59, 130, 246, 0.25);
@@ -1201,8 +1199,6 @@ main,
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
-/* ❌ KHỐI LỆNH CHỤP ẢNH XUẤT FILE: Khi lưu ảnh quẻ bói, 
-   ta chủ động ẩn Bảng xếp hạng đi để bức ảnh PNG tải về chỉ chứa duy nhất chiếc bài sạch sẽ của bạn */
 .card.exporting + .leaderboard-container {
     display: none !important;
 }
@@ -1215,11 +1211,10 @@ main,
     display: flex; flex-direction: column; gap: 8px;
     max-height: 400px; overflow-y: auto; padding-right: 4px;
 }
-/* Custom thanh cuộn bảng rank cho mượt và nhỏ */
 .leaderboard-list::-webkit-scrollbar { width: 4px; }
 .leaderboard-list::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
 
-/* Khung chữ nhật bo góc của từng người chơi */
+/* Khung chữ nhật tiêu chuẩn cho rank từ 4 đến 10 */
 .rank-item {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 15px; border-radius: 12px;
@@ -1227,39 +1222,73 @@ main,
     border: 1px solid rgba(255, 255, 255, 0.08);
     font-size: 13.5px; box-sizing: border-box;
     transition: transform 0.2s;
+    position: relative;
+    overflow: hidden;
 }
-.rank-left { display: flex; align-items: center; gap: 10px; }
-.rank-number { font-weight: bold; width: 24px; color: #94a3b8; }
-.rank-name { font-weight: 500; color: #e2e8f0; }
+.rank-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rank-number { font-weight: bold; width: 24px; color: #94a3b8; font-size: 15px; text-align: center; }
+.rank-name { font-weight: 500; color: #e2e8f0; display: inline-flex; align-items: center; gap: 4px; }
 .rank-right { display: flex; align-items: center; gap: 12px; }
 .rank-luck { font-weight: bold; color: #facc15; }
 .rank-time { font-size: 11px; color: #64748b; }
 .no-rank-yet { text-align: center; padding: 20px; font-size: 13px; color: #64748b; }
 
-/* 🌟 PHÂN TẦNG HIỆU ỨNG NGỌN LỬA 3D ĐẶC BIỆT CHO TOP 6 */
-.rank-fire { animation: firePulse 1.5s ease-in-out infinite alternate; font-weight: bold; }
-@keyframes firePulse {
-    0% { transform: scale(1); box-shadow: 0 0 5px var(--fire-color); }
-    100% { transform: scale(1.02); box-shadow: 0 0 15px var(--fire-color); border-color: var(--fire-color); }
+/* 🌟 ICON ĐỘC QUYỀN TRONG TÊN CỦA TOP 3 */
+.vip-icon {
+    font-size: 14px;
+    animation: bounceIcon 1s ease-in-out infinite alternate;
+}
+@keyframes bounceIcon {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-2px) scale(1.15); }
 }
 
-/* Gán mã màu ngọn lửa lần lượt từ trên xuống dưới */
-.top-1-fire { --fire-color: #ef4444; background: rgba(239, 68, 68, 0.1) !important; } /* Đỏ */
-.top-2-fire { --fire-color: #a855f7; background: rgba(168, 85, 247, 0.1) !important; } /* Tím */
-.top-3-fire { --fire-color: #eab308; background: rgba(234, 179, 8, 0.1) !important; }  /* Vàng */
-.top-4-fire { --fire-color: #3b82f6; background: rgba(59, 130, 246, 0.1) !important; }  /* Xanh lam */
-.top-5-fire { --fire-color: #cbd5e1; background: rgba(203, 213, 225, 0.15) !important; }/* Bạc */
-.top-6-fire { --fire-color: #b45309; background: rgba(180, 83, 9, 0.15) !important; } /* Nâu */
+/* 🌟 SIÊU HIỆU ỨNG GRADIENT DÒNG CHẢY CHO TOP 3 */
+.rank-fire { 
+    font-weight: bold; 
+    background-size: 200% 200% !important;
+    animation: fireGlow 1.5s ease-in-out infinite alternate, gradientFlow 4s ease infinite;
+}
 
-/* Huy chương màu sắc */
-.top-1-fire .rank-number { color: #ef4444; }
-.top-2-fire .rank-number { color: #a855f7; }
-.top-3-fire .rank-number { color: #eab308; }
+@keyframes fireGlow {
+    0% { transform: scale(1); box-shadow: 0 0 8px var(--fire-shadow); }
+    100% { transform: scale(1.02); box-shadow: 0 0 20px var(--fire-shadow); border-color: var(--fire-border); }
+}
 
-/* 🌟 THÔNG SỐ STREAK TRONG BẢNG RANK */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* 🥇 TOP 1: Lửa Đỏ Phượng Hoàng kết hợp Vàng Kim hoàng gia */
+.top-1-fire { 
+    --fire-shadow: rgba(239, 68, 68, 0.4);
+    --fire-border: #f59e0b;
+    background: linear-gradient(-45deg, rgba(239, 68, 68, 0.25), rgba(245, 158, 11, 0.2)) !important;
+} 
+.top-1-fire .rank-name { color: #fef08a; text-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
+
+/* 🥈 TOP 2: Tím Huyền Bí phối Hồng Tinh Tú rực rỡ */
+.top-2-fire { 
+    --fire-shadow: rgba(168, 85, 247, 0.4);
+    --fire-border: #ec4899;
+    background: linear-gradient(-45deg, rgba(168, 85, 247, 0.25), rgba(236, 72, 153, 0.2)) !important;
+} 
+.top-2-fire .rank-name { color: #f5d0fe; text-shadow: 0 0 8px rgba(168, 85, 247, 0.6); }
+
+/* 🥉 TOP 3: Lửa Vàng rực kết hợp Xanh Neon Cyberpunk */
+.top-3-fire { 
+    --fire-shadow: rgba(234, 179, 8, 0.35);
+    --fire-border: #06b6d4;
+    background: linear-gradient(-45deg, rgba(234, 179, 8, 0.25), rgba(6, 182, 212, 0.15)) !important;
+}  
+.top-3-fire .rank-name { color: #e0f2fe; text-shadow: 0 0 8px rgba(6, 182, 212, 0.6); }
+
+/* 🌟 THÔNG SỐ STREAK */
 .rank-streak {
     font-size: 11px;
-    color: #f97316; /* Màu cam ngọn lửa cực cháy */
+    color: #f97316; 
     background: rgba(249, 115, 22, 0.1);
     padding: 2px 6px;
     border-radius: 6px;
@@ -1267,7 +1296,7 @@ main,
     display: inline-flex;
     align-items: center;
     gap: 2px;
-    margin-left: 8px; /* Đẩy cách xa Nickname một khoảng 8px */
+    margin-left: 8px;
 }
 
 /* Ép căn chỉnh hàng ngang cho phần nội dung bên trái */
@@ -1276,6 +1305,8 @@ main,
     align-items: center;
     flex-wrap: wrap; /* Tự động xuống hàng mượt mà nếu tên quá dài trên điện thoại */
 }
+
+
 
 /*=====================
 Khung cmt
