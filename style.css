@@ -1061,13 +1061,25 @@ main,
     z-index: -99999 !important; /* Đẩy lùi sâu nhất xuống dưới Card và các bảng điều khiển */
     overflow: hidden !important;
     pointer-events: none !important;
+    transform: none !important; /* Tránh lỗi xung đột tọa độ khi bật Fullscreen */
 }
 
+/* 🌟 BẢN SỬA LỖI CHÍ MẠNG: ÉP IFRAME YOUTUBE LUÔN CÂN BẰNG VÀO CHÍNH GIỮA MÀN HÌNH */
 .video-bg-container iframe {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    
     width: 100vw !important;
-    height: 56.25vw !important;
+    height: 56.25vw !important; /* Tỷ lệ vàng 16:9 */
     min-height: 100vh !important;
     min-width: 177.77vh !important;
+    
+    /* 🚀 ĐÃ THÊM: Căn tâm tuyệt đối và phóng to nhẹ 1.02 lần để nuốt trọn mọi vết hở viền đen */
+    transform: translate(-50%, -50%) scale(1.02) !important; 
+    
+    object-fit: cover !important;
+    pointer-events: none !important;
 }
 
 
@@ -1192,6 +1204,29 @@ main,
     color: #ffffff !important;
     transform: translateY(2px); /* Hiệu ứng lún nút */
     box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2); /* Đổ bóng bên trong */
+}
+
+
+
+/*=================================
+CHE THANH KÉO TRANG KHI VIDEO FULL MÀN HÌNH
+==========================*/
+/* 🌟 BÍ KÍP CHÍ MẠNG: Ẩn thanh cuộn bên phải khi đang trong chế độ Concert */
+.app-container.minimized ~ body, 
+html:has(.app-container.minimized) {
+    overflow: hidden !important; /* Chặn hoàn toàn việc cuộn trang */
+}
+
+/* Cấu hình ẩn thanh cuộn cho Chrome, Safari và Opera */
+html:has(.app-container.minimized)::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+}
+
+/* Cấu hình ẩn thanh cuộn cho Firefox và IE/Edge */
+html:has(.app-container.minimized) {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE và Edge */
 }
 
 /* ===================================================

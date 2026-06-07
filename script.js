@@ -1546,11 +1546,14 @@ player = new YT.Player("youtubeBgVideo", {
         onError: onVideoError               // Lắng nghe lỗi để xử lý nhảy bài lỗi
     }
 });
-
 }
 
+
+
+
+
 // =================================================================
-// 👁️ CHỨC NĂNG ẨN GIAO DIỆN VÀO ICON PNG VÀ PHÒNG LIVE STREAM (ĐỒNG BỘ NÂNG CẤP)
+// 👁️ CHỨC NĂNG ẨN GIAO DIỆN VÀO ICON PNG VÀ PHÒNG LIVE STREAM (ĐỒNG BỘ NÂNG CẤP FULLSCREEN)
 // =================================================================
 
 const actionsBox = document.querySelector(".actions");
@@ -1562,118 +1565,138 @@ if (actionsBox && appBox && miniIcon) {
     const hideBtn = document.createElement("button");
 
     hideBtn.className = "";
-hideBtn.id = "hideAppBtn";
-hideBtn.innerHTML = "Mini Concert 🔍";
-actionsBox.appendChild(hideBtn);
+    hideBtn.id = "hideAppBtn";
+    hideBtn.innerHTML = "Mini Concert 🔍";
+    actionsBox.appendChild(hideBtn);
 
-// Sự kiện khi bấm nút ẩn App (Kích hoạt Mini Concert)
-hideBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
+    // Sự kiện khi bấm nút ẩn App (Kích hoạt Mini Concert + Fullscreen)
+    hideBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
 
-    appBox.classList.add("minimized");
-    miniIcon.classList.add("show");
+        appBox.classList.add("minimized");
+        miniIcon.classList.add("show");
 
-    if (typeof stopSparkles === "function") stopSparkles();
+        if (typeof stopSparkles === "function") stopSparkles();
 
-    // TẮT NHẠC NỀN OTD CỦA BẠN
-    if (bgMusic && !bgMusic.paused) {
-        bgMusic.pause();
-    }
-
-    // BẬT ÂM THANH CỦA VIDEO NỀN YOUTUBE
-    try {
-        if (player && typeof player.unMute === "function") {
-            player.unMute();
-            player.setVolume(100);
+        // TẮT NHẠC NỀN OTD CỦA BẠN
+        if (bgMusic && !bgMusic.paused) {
+            bgMusic.pause();
         }
-    } catch (err) {
-        console.log("YouTube chưa load xong nhưng app vẫn ẩn bình thường:", err);
-    }
 
-    // KÍCH HOẠT PHÒNG LIVE STREAM BÌNH LUẬN CHẠY CHỮ
-    onMiniConcertActive();
-});
-
-// 2. HÀM CHUNG ĐỂ BUNG/MỞ LẠI APP BÌNH THƯỜNG
-function restoreAppGlow() {
-    if (!appBox.classList.contains("minimized")) return;
-
-    appBox.classList.remove("minimized");
-    miniIcon.classList.remove("show");
-
-    // Kích hoạt lại mưa sao theo điểm luck cũ
-    const saved = JSON.parse(localStorage.getItem("dailyFortune"));
-    if (saved && typeof startInfiniteSparkles === "function") {
-        startInfiniteSparkles(parseInt(saved.luck) || 0);
-    }
-
-    // TẮT TIẾNG VIDEO NỀN YOUTUBE
-    try {
-        if (player && typeof player.mute === "function") {
-            player.mute();
+        // BẬT ÂM THANH CỦA VIDEO NỀN YOUTUBE
+        try {
+            if (player && typeof player.unMute === "function") {
+                player.unMute();
+                player.setVolume(100);
+            }
+        } catch (err) {
+            console.log("YouTube chưa load xong nhưng app vẫn ẩn bình thường:", err);
         }
-    } catch (err) { console.log(err); }
 
-    // BẬT LẠI NHẠC NỀN OTD CỦA BẠN
-    if (musicBtn && musicBtn.classList.contains("active") && bgMusic) {
-        bgMusic.play().catch(err => console.log("Chờ tương tác âm thanh"));
-    }
-
-    // DỌN DẸP SẠCH PHÒNG LIVE CHAT KHI THOÁT CONCERT
-    onMiniConcertDeactive();
-}
-
-// 3. SỰ KIỆN CLICK KHÔI PHỤC APP
-miniIcon.addEventListener("click", (e) => {
-    e.stopPropagation();
-     // 🚨 ÉP ẨN GIAO DIỆN CHAT NGAY TẠI ĐÂY KHI BẤM VÀO LỒNG ĐÈN
-    const chatBtn = document.getElementById("toggleChatPanelBtn");
-    const chatPanel = document.getElementById("liveChatPanel");
-    if (chatBtn) chatBtn.classList.remove("show-btn");
-    if (chatPanel) chatPanel.style.display = "none";
-    restoreAppGlow();
-});
-
-            // 🔥 BẢN SỬA LỖI CHÍ MẠNG TOÀN DIỆN (ĐỒNG BỘ THEO CƠ CHẾ CLASS CỦA LIGHTSTICK)
-window.addEventListener("click", (e) => {
-    const chatPanel = document.getElementById("liveChatPanel");
-    const overlayBox = document.getElementById("commentOverlay");
-    const chatBtn = document.getElementById("toggleChatPanelBtn");
-
-    // Sử dụng .closest hoặc .contains để kiểm tra chính xác vị trí click
-    const clickInChat = chatPanel && chatPanel.contains(e.target);
-    const clickInOverlay = overlayBox && overlayBox.contains(e.target);
-    const clickInChatBtn = chatBtn && chatBtn.contains(e.target);
-
-    // 1. NẾU CLICK VÀO ICON CHAT: Xử lý ẩn/hiện khung gõ bình luận
-    if (clickInChatBtn) {
-        e.stopPropagation(); // Chặn đứng không cho thoát concert ngoài ý muốn
-        if (chatPanel) {
-            chatPanel.style.display = (chatPanel.style.display === "none") ? "block" : "none";
-            console.log("🔘 Chuyển đổi trạng thái khung chat.");
+        // 🌟 KÍCH HOẠT CHẾ ĐỘ TOÀN MÀN HÌNH HỆ THỐNG (NUỐT TRỌN THANH URL VÀ TASKBAR)
+        if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { /* IE11 / Edge */
+                document.documentElement.msRequestFullscreen();
+            }
         }
-        return; // Dừng tại đây, không chạy xuống logic thoát ở dưới
+
+        // KÍCH HOẠT PHÒNG LIVE STREAM BÌNH LUẬN CHẠY CHỮ
+        onMiniConcertActive();
+    });
+
+    // 2. HÀM CHUNG ĐỂ BUNG/MỞ LẠI APP BÌNH THƯỜNG
+    function restoreAppGlow() {
+        if (!appBox.classList.contains("minimized")) return;
+
+        appBox.classList.remove("minimized");
+        miniIcon.classList.remove("show");
+
+        // Kích hoạt lại mưa sao theo điểm luck cũ
+        const saved = JSON.parse(localStorage.getItem("dailyFortune"));
+        if (saved && typeof startInfiniteSparkles === "function") {
+            startInfiniteSparkles(parseInt(saved.luck) || 0);
+        }
+
+        // TẮT TIẾNG VIDEO NỀN YOUTUBE
+        try {
+            if (player && typeof player.mute === "function") {
+                player.mute();
+            }
+        } catch (err) { console.log(err); }
+
+        // BẬT LẠI NHẠC NỀN OTD CỦA BẠN
+        if (musicBtn && musicBtn.classList.contains("active") && bgMusic) {
+            bgMusic.play().catch(err => console.log("Chờ tương tác âm thanh"));
+        }
+
+        // 🌟 TỰ ĐỘNG THOÁT CHẾ ĐỘ TOÀN MÀN HÌNH ĐỂ HIỆN LẠI THANH URL CỦA TRÌNH DUYỆT
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { /* Safari */
+                document.webkitExitFullscreen();
+            } else if (document.msFullscreenElement) { /* IE11 */
+                document.msExitFullscreen();
+            }
+        }
+
+        // DỌN DẸP SẠCH PHÒNG LIVE CHAT KHI THOÁT CONCERT
+        onMiniConcertDeactive();
     }
 
-    // 2. NẾU CLICK RA NGOÀI KHOẢNG TRỐNG: Tiến hành đóng phòng concert
-    if (!clickInChat && !clickInOverlay) {
-        console.log("🎬 Kích hoạt click ngoài: Ép ẩn giao diện chat ngay lập tức!");
-
-        // 🚨 ĐOẠN ĐỒNG BỘ ÉP ẨN TRƯỚC: Xóa class để icon biến mất bất chấp hàm restoreAppGlow có bị 'return' hay không
+    // 3. SỰ KIỆN CLICK KHÔI PHỤC APP
+    miniIcon.addEventListener("click", (e) => {
+        e.stopPropagation();
+        // 🚨 ÉP ẨN GIAO DIỆN CHAT NGAY TẠI ĐÂY KHI BẤM VÀO LỒNG ĐÈN
+        const chatBtn = document.getElementById("toggleChatPanelBtn");
+        const chatPanel = document.getElementById("liveChatPanel");
         if (chatBtn) chatBtn.classList.remove("show-btn");
         if (chatPanel) chatPanel.style.display = "none";
-        if (overlayBox) overlayBox.innerHTML = "";
-
-        // Sau khi đã dọn dẹp xong giao diện chat, tiến hành gọi hàm mở lại app cũ của ông
         restoreAppGlow();
-    }
-});
+    });
+
+    // 🔥 BẢN SỬA LỖI CHÍ MẠNG TOÀN DIỆN (ĐỒNG BỘ THEO CƠ CHẾ CLASS CỦA LIGHTSTICK)
+    window.addEventListener("click", (e) => {
+        const chatPanel = document.getElementById("liveChatPanel");
+        const overlayBox = document.getElementById("commentOverlay");
+        const chatBtn = document.getElementById("toggleChatPanelBtn");
+
+        // 使用 .closest 或 .contains 检查准确点击位置
+        const clickInChat = chatPanel && chatPanel.contains(e.target);
+        const clickInOverlay = overlayBox && overlayBox.contains(e.target);
+        const clickInChatBtn = chatBtn && chatBtn.contains(e.target);
+
+        // 1. NẾU CLICK VÀO ICON CHAT: Xử lý ẩn/hiện khung gõ bình luận
+        if (clickInChatBtn) {
+            e.stopPropagation(); // Chặn đứng không cho thoát concert ngoài ý muốn
+            if (chatPanel) {
+                chatPanel.style.display = (chatPanel.style.display === "none") ? "block" : "none";
+                console.log("🔘 Chuyển đổi trạng thái khung chat.");
+            }
+            return; // Dừng tại đây, không chạy xuống logic thoát ở dưới
+        }
+
+        // 2. NẾU CLICK RA NGOÀI KHOẢNG TRỐNG: Tiến hành đóng phòng concert
+        if (!clickInChat && !clickInOverlay) {
+            console.log("🎬 Kích hoạt click ngoài: Ép ẩn giao diện chat ngay lập tức!");
+
+            // 🚨 ĐOẠN ĐỒNG BỘ ÉP ẨN TRƯỚC: Xóa class để icon biến mất bất chấp hàm restoreAppGlow có bị 'return' hay không
+            if (chatBtn) chatBtn.classList.remove("show-btn");
+            if (chatPanel) chatPanel.style.display = "none";
+            if (overlayBox) overlayBox.innerHTML = "";
+
+            // Sau khi đã dọn dẹp xong giao diện chat, tiến hành gọi hàm mở lại app cũ của ông
+            restoreAppGlow();
+        }
+    });
+}
 
 
-
-
-
-    // 🔥 ĐOẠN GHÉP MỚI: LẮNG NGHE PHÍM ENTER ĐỂ GỬI BÌNH LUẬN AN TOÀN
+// 🔥 ĐOẠN GHÉP MỚI: LẮNG NGHE PHÍM ENTER ĐỂ GỬI BÌNH LUẬN AN TOÀN
 const chatInput = document.getElementById("chatContentInput");
 if (chatInput) {
     chatInput.addEventListener("keydown", (event) => {
@@ -1686,47 +1709,45 @@ if (chatInput) {
 }
 
 
-    // 4. THUẬT TOÁN KÉO LÊ DI CHUYỂN ICON PNG TỰ DO THEO TAY (DRAG & DROP)
-    let isDragging = false;
-    let hasMoved = false;
-    let offsetX = 0, offsetY = 0;
+// 4. THUẬT TOÁN KÉO LÊ DI CHUYỂN ICON PNG TỰ DO THEO TAY (DRAG & DROP)
+let isDragging = false;
+let hasMoved = false;
+let offsetX = 0, offsetY = 0;
 
-    function dragStart(clientX, clientY) {
-        if (!miniIcon.classList.contains("show")) return;
-        isDragging = true;
-        hasMoved = false;
-        offsetX = clientX - miniIcon.getBoundingClientRect().left;
-        offsetY = clientY - miniIcon.getBoundingClientRect().top;
-    }
-
-    function dragMove(clientX, clientY) {
-        if (!isDragging) return;
-        hasMoved = true;
-        let left = clientX - offsetX;
-        let top = clientY - offsetY;
-        left = Math.max(10, Math.min(window.innerWidth - 85, left));
-        top = Math.max(10, Math.min(window.innerHeight - 85, top));
-        miniIcon.style.left = `${left}px`;
-        miniIcon.style.top = `${top}px`;
-        miniIcon.style.bottom = 'auto';
-        miniIcon.style.right = 'auto';
-    }
-
-    function dragEnd() { isDragging = false; }
-
-    miniIcon.addEventListener("mousedown", (e) => dragStart(e.clientX, e.clientY));
-    window.addEventListener("mousemove", (e) => dragMove(e.clientX, e.clientY));
-    window.addEventListener("mouseup", dragEnd);
-
-    miniIcon.addEventListener("touchstart", (e) => {
-        if (e.touches && e.touches.length > 0) dragStart(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
-    window.addEventListener("touchmove", (e) => {
-        if (isDragging && e.touches && e.touches.length > 0) dragMove(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: false });
-    window.addEventListener("touchend", dragEnd);
+function dragStart(clientX, clientY) {
+    if (!miniIcon.classList.contains("show")) return;
+    isDragging = true;
+    hasMoved = false;
+    offsetX = clientX - miniIcon.getBoundingClientRect().left;
+    offsetY = clientY - miniIcon.getBoundingClientRect().top;
 }
 
+function dragMove(clientX, clientY) {
+    if (!isDragging) return;
+    hasMoved = true;
+    let left = clientX - offsetX;
+    let top = clientY - offsetY;
+    left = Math.max(10, Math.min(window.innerWidth - 85, left));
+    top = Math.max(10, Math.min(window.innerHeight - 85, top));
+    miniIcon.style.left = `${left}px`;
+    miniIcon.style.top = `${top}px`;
+    miniIcon.style.bottom = 'auto';
+    miniIcon.style.right = 'auto';
+}
+
+function dragEnd() { isDragging = false; }
+
+miniIcon.addEventListener("mousedown", (e) => dragStart(e.clientX, e.clientY));
+window.addEventListener("mousemove", (e) => dragMove(e.clientX, e.clientY));
+window.addEventListener("mouseup", dragEnd);
+
+miniIcon.addEventListener("touchstart", (e) => {
+    if (e.touches && e.touches.length > 0) dragStart(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: true });
+window.addEventListener("touchmove", (e) => {
+    if (isDragging && e.touches && e.touches.length > 0) dragMove(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: false });
+window.addEventListener("touchend", dragEnd);
 
 // =================================================================
 // ⚙️ CÁC HÀM PHỤ TRỢ ĐỒNG BỘ ĐÃ ĐƯỢC CHUẨN HÓA THEO CODE CỦA BẠN
@@ -1738,25 +1759,24 @@ function onMiniConcertActive() {
     if (chatBtn) chatBtn.classList.add("show-btn"); 
     
     // Khung chat chính mặc định ẩn đi lúc đầu
-const chatPanel = document.getElementById("liveChatPanel");
-if (chatPanel) chatPanel.style.display = "none";
+    const chatPanel = document.getElementById("liveChatPanel");
+    if (chatPanel) chatPanel.style.display = "none";
 
-// 2. Logic kiểm tra nút Hide cmt của ông
-const toggleCheckbox = document.getElementById("toggleCommentsCheckbox");
-const commentOverlay = document.getElementById("commentOverlay");
-if (toggleCheckbox && commentOverlay) {
-    if (toggleCheckbox.checked) {
-        commentOverlay.classList.add("hide-all-comments");
-    } else {
-        commentOverlay.classList.remove("hide-all-comments");
+    // 2. Logic kiểm tra nút Hide cmt của ông
+    const toggleCheckbox = document.getElementById("toggleCommentsCheckbox");
+    const commentOverlay = document.getElementById("commentOverlay");
+    if (toggleCheckbox && commentOverlay) {
+        if (toggleCheckbox.checked) {
+            commentOverlay.classList.add("hide-all-comments");
+        } else {
+            commentOverlay.classList.remove("hide-all-comments");
+        }
     }
-}
 
-if (typeof fetchCommentsForCurrentVideo === "function") fetchCommentsForCurrentVideo();
-if (typeof startCommentSync === "function") startCommentSync();
-if (typeof startRealtimeCommentPolling === "function") startRealtimeCommentPolling();
+    if (typeof fetchCommentsForCurrentVideo === "function") fetchCommentsForCurrentVideo();
+    if (typeof startCommentSync === "function") startCommentSync();
+    if (typeof startRealtimeCommentPolling === "function") startRealtimeCommentPolling();
 }
-
 
 function onMiniConcertDeactive() {
     // 1. 🔥 DÙNG CLASS: Xóa class để ẩn icon chat đi ngay lập tức
@@ -1764,26 +1784,22 @@ function onMiniConcertDeactive() {
     if (chatBtn) chatBtn.classList.remove("show-btn"); 
     
     // Ẩn luôn khung gõ chữ và dọn dẹp overlay
-const chatPanel = document.getElementById("liveChatPanel");
-const overlay = document.getElementById("commentOverlay");
-if (chatPanel) chatPanel.style.display = "none";
-if (overlay) {
-    overlay.innerHTML = "";
-    overlay.classList.remove("hide-all-comments");
+    const chatPanel = document.getElementById("liveChatPanel");
+    const overlay = document.getElementById("commentOverlay");
+    if (chatPanel) chatPanel.style.display = "none";
+    if (overlay) {
+        overlay.innerHTML = "";
+        overlay.classList.remove("hide-all-comments");
+    }
+
+    // 2. Các lệnh xóa bộ nhớ đệm cũ của ông giữ nguyên
+    if (typeof syncTimer !== "undefined" && syncTimer) clearInterval(syncTimer);
+    if (typeof realtimeCommentInterval !== "undefined" && realtimeCommentInterval) clearInterval(realtimeCommentInterval);
+    if (typeof currentLoadedComments !== "undefined") currentLoadedComments = [];
+    if (typeof renderedCommentIds !== "undefined" && renderedCommentIds) renderedCommentIds.clear();
+
+    console.log("🧹 Đã ẩn Icon Chat theo cơ chế Class đồng bộ thành công!");
 }
-
-// 2. Các lệnh xóa bộ nhớ đệm cũ của ông giữ nguyên
-if (typeof syncTimer !== "undefined" && syncTimer) clearInterval(syncTimer);
-if (typeof realtimeCommentInterval !== "undefined" && realtimeCommentInterval) clearInterval(realtimeCommentInterval);
-if (typeof currentLoadedComments !== "undefined") currentLoadedComments = [];
-if (typeof renderedCommentIds !== "undefined" && renderedCommentIds) renderedCommentIds.clear();
-
-console.log("🧹 Đã ẩn Icon Chat theo cơ chế Class đồng bộ thành công!");
-}
-
-
-
-
 
 // =================================================================
 // ĐOẠN XỬ LÝ SỰ KIỆN CLICK CHỐNG XUNG ĐỘT (Vứt vào cuối file JS của bạn)
