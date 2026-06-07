@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TWS's confession</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- 🎥 KHUNG CHỨA VIDEO YOUTUBE LÀM NỀN CHÌM -->
+<div class="video-bg-container">
+    <div id="youtubeBgVideo"></div>
+</div>
+
+<!-- Lớp phủ chứa các bình luận bay (Danmaku Overlay) -->
+<div id="commentOverlay" class="comment-overlay"></div>
+
+<!-- 🔘 ICON PNG NÚT BẤM MỞ KHUNG CHAT (Nằm ở góc dưới bên trái) -->
+<button id="toggleChatPanelBtn" class="floating-chat-btn" style="display: none;">
+    <img src="images/chaticon.png" alt="Open Chat" class="chat-btn-img">
+    <!-- Thêm dòng chữ Chat ở dưới ảnh -->
+    <span class="chat-btn-text">Chat</span>
+</button>
+
+<!-- Khung điều khiển bình luận (Mặc định ẩn, chỉ hiện khi vào chế độ Mini Concert) -->
+<div id="liveChatPanel" class="live-chat-panel" style="display: none;">
+    <div class="chat-input-group">
+        <input type="text" id="chatContentInput" placeholder="Comment something..." maxlength="100">
+        <button id="sendCommentBtn">Send 🚀</button>
+    </div>
+    <div class="chat-options">
+        <label><input type="checkbox" id="anonymousCheckbox"> Anonymous comment</label>
+        
+        <!-- Nút Hide cmt mới: Mặc định không tick (không có thuộc tính checked) -->
+    <label style="cursor: pointer; user-select: none; margin-left: 15px;">
+        <input type="checkbox" id="toggleCommentsCheckbox"> 
+        <span>Hide cmt</span>
+    </label>
+
+        <span id="cooldownTimer" class="cooldown-text"></span>
+    </div>
+</div>
+
+<!-- 🖼️ ICON PNG DI ĐỘNG KHI ẨN APP (MẶC ĐỊNH ẨN) -->
+<div id="floatingEnvelope" class="floating-envelope">
+    <!-- Bạn nhớ bỏ ảnh PNG đã cắt nền vào thư mục images và ghi đúng tên vào đây nhé -->
+    <img src="images/lightstick.png" alt="App Icon" class="envelope-custom-img">
+</div>
+
+<!-- 🌟 CHIẾC BẢNG CHÀO MỪNG VÀ HƯỚNG DẪN ĐẦU TRANG -->
+<div id="welcomeModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💙 WELCOME TO TWS's CONFESSION 💙</h2>
+        </div>
+        <div class="modal-body">
+            <p class="welcome-intro"> Dear Fan! Welcome to your daily sweet confession space with TWS</p>
+            
+            <div class="guide-steps">
+                <div class="step-item">🦒🐺 This website works best on PC/Laptop.</div>
+                <div class="step-item">🐶🐰 If you are on a mobile device, please open it in your system browser (Safari/Chrome) for the best experience!</div>
+                <div class="step-item">🪼🐥 Don't forget to check the <em>📖 INSTRUCTIONS</em> before proceeding!</div>
+            </div>
+            
+            <p class="modal-note">📌 <strong>Take Note:</strong> You can only receive one confession from TWS per day. Maintain your 🔥 <strong>Streak</strong> to unlock exclusive <strong>Ranks</strong> and amazing titles!</p>
+        </div>
+        <div class="modal-footer">
+            <button id="closeModalBtn">Let's Start! 💙</button>
+        </div>
+    </div>
+</div>
+
+<!-- 🌟 BẮT ĐẦU CONTAINER CHA KHỔNG LỒ -->
+<div class="app-container">
+
+    <!-- 📦 KHUNG 1: HƯỚNG DẪN BÊN TRÁI -->
+    <div class="blog-info-left">
+        <span style="color: #00acf5; font-weight: bold; text-align: center; display: block; margin-top: 5px; margin-bottom: 5px;">
+            Instructions
+        </span>
+        <p class="info-text">
+            &nbsp;&nbsp;✏️ If you wish, you can enter your nickname in the box on the right.<br>
+            &nbsp;&nbsp;✨ <strong>Receive Confession:</strong> Flip today's card to reveal your fortune.<br>
+            &nbsp;&nbsp;📸 <strong>Save Card (PC):</strong> Download your sparkling HD card to your device.<br>
+            &nbsp;&nbsp;📤 <strong>Share Card:</strong> Share your luck directly to social media stories.<br>
+            &nbsp;&nbsp;🎵 <strong>Music:</strong> Toggle the sweet background tracks on or off.<br>
+            &nbsp;&nbsp;📜 <strong>History:</strong> View and review your last 20 daily fortunes.<br>
+            &nbsp;&nbsp;🖤 <strong>Favorite:</strong> Save your favorite HD card directly into the list.<br>
+            &nbsp;&nbsp;💙 <strong>Favorites List:</strong> Open your collection to view, download or share saved cards.<br>
+            &nbsp;&nbsp;👁️ <strong>Mini Concert:</strong> Shrink the app into a glowing floating sticker and enjoy the music video full-screen.<br>
+        </p>
+        
+        <p class="info-text">
+            <span style="color: #00acf5; font-weight: bold; text-align: center; display: block; margin-top: 8px; margin-bottom: 5px; font-size: 14px; letter-spacing: 0.5px;">
+                Mobile Image Saving Fix:
+            </span>
+            🤖 <strong>Android:</strong><br>
+            &nbsp;&nbsp;• Option 1: Click <em>"Share Card"</em> → Save to Photos.<br>
+            &nbsp;&nbsp;• Option 2: Add to <em>"Fav List"</em> → Open card → Download.<br>
+            🍏 <strong>iOS (iPhone):</strong><br>
+            &nbsp;&nbsp;• Click <em>"Share Card"</em> → Choose <strong>"Save to Files"</strong> (Recommended).
+        </p>
+        
+        <!-- 🌟 DÒNG LƯU Ý LỖI CARD TRẮNG MỚI THÊM VÀO ĐÂY -->
+        <p class="info-text">
+            <span style="color: #00acf5; font-weight: bold; text-align: center; display: block; margin-top: 8px; margin-bottom: 5px; font-size: 14px; letter-spacing: 0.5px;">
+                Blank Card Fix:
+            </span>
+            &nbsp;&nbsp;If <em>saving</em>, <em>sharing</em>, or <em>favoriting</em> results in a blank card, please try again a few times!<br>
+        </p>
+
+
+        <div class="info-title" style="margin-top: 15px;">🌐 ABOUT BLOG</div>
+        <div class="blog-link">
+            Welcome to my blog! Visit to read more interesting things:
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"> Visit Blog 💙</a>
+        </div>
+    </div>
+
+    <!-- 📦 KHUNG 2: CHIẾC CARD Ở GIỮA (Đã dọn sạch lớp lật 3D và viền khối thừa) -->
+    <div class="captureArea" id="captureArea">
+        <div class="card" id="fortuneCard">
+            <div class="card-inner">
+                <h1 id="cardTitle">TWS's confession OTD</h1>
+                <img id="fortuneImage" src="images/thumbnail3.png" alt="fortune" crossOrigin="anonymous">
+                <div id="fortuneText">Click the button beside</div>
+                <div id="luckBox">Luck: --</div>
+                <div id="streakBox">🔥 Streak: 0 days</div>
+                <div id="badgeBox" style="font-size: 14px; font-weight: bold; color: #facc15; margin-top: 5px; display: inline-block; letter-spacing: 0.5px;">
+                    Rank: 🥉 Newbie 
+                </div>
+                <p class="credit">@Hanjin Baboo💙</p>
+            </div>
+        </div>
+
+            <!-- 🏆 BẢNG XẾP HẠNG LUCK OTD (NẰM DƯỚI CARD) -->
+        <div class="leaderboard-container">
+            <div class="leaderboard-header">
+                <h2>🏆 TODAY's LUCK LEADERBOARD</h2>
+                <p>Top 42 Fans with the highest luck & earliest time</p>
+            </div>
+            
+            <!-- Danh sách người chơi lọt top sẽ tự sinh động bằng JavaScript tại đây -->
+            <div id="leaderboardList" class="leaderboard-list">
+                <!-- Khung chữ nhật mẫu cho người dùng thấy trước nếu bảng trống -->
+                <div class="no-rank-yet">No ranks recorded today. Be the first to top! ✨</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- 📦 KHUNG 3: BẢNG ĐIỀU KHIỂN BÊN PHẢI -->
+    <div class="actions">
+        <div class="actions-title">🛠️ Control Panel</div>
+        
+        <div class="input-group">
+            <input type="text" id="nicknameInput" placeholder="Enter your nickname✏️" maxlength="15">
+        </div>
+        <button id="fortuneBtn">Receive Confession ✨</button>
+        <button id="saveBtn">Save Card (PC) 📸</button>
+        <button id="shareBtn">Share Card 📤</button>
+        <button id="musicBtn">Music 🎵</button>
+        <button id="historyBtn">History 📜</button>
+        <button id="favoriteBtn">Add to Favorite ⭐ </button>
+        <button id="favoriteListBtn">Favorites List 💙 </button>
+        <div id="favoriteList"></div>
+        <div id="shareStatus"></div>
+        <div id="historyList"></div>
+        
+    </div>
+
+</div> <!-- DẤU ĐÓNG CỦA APP-CONTAINER -->
+
+<audio id="bgMusic" loop>
+    <source src="music/music.mp3" type="audio/mpeg">
+</audio>
+
+
+<!-- HỆ THỐNG THƯ VIỆN SCRIPT -->
+<script src="localforage.min.js"></script>
+
+<!-- SỬA DÒNG 120: Chuyển từ link cdn sang gọi file offline nội bộ trong thư mục -->
+<script src="dom-to-image-more.min.js"></script>
+
+<script src="data/fortunes.js"></script>
+
+<!cái này là supabase>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
