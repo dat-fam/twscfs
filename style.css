@@ -1072,7 +1072,7 @@ main,
 
 
 /* ===================================================
-   🌀 CINEMA MODE - STYLING & STICKER SWAY ANIMATION
+   🌀 CINEMA MODE - STYLING & STICKER SWAY ANIMATION LIGHTSTICK
    =================================================== */
 
 /* Cấu hình hiệu ứng thu phóng mượt mà cho toàn bộ giao diện App */
@@ -1089,13 +1089,16 @@ main,
     pointer-events: none;
 }
 
-/* Khung chứa tấm ảnh PNG lơ lửng */
+/* Khung chứa tấm ảnh PNG lơ lửng - Đã phóng to toàn diện */
 .floating-envelope {
     position: fixed;
-    bottom: 50px;
+    bottom: 50px; /* Tiêu chuẩn khoảng cách trên Laptop */
     right: 50px;
-    width: 150px;  /* Kích thước icon vừa vặn tinh tế */
-    height: 150px; 
+    
+    /* 🌟 ĐÃ SỬA: Tăng kích thước từ 150px lên 220px cho cả laptop lẫn mobile */
+    width: 220px;  
+    height: 220px; 
+    
     z-index: 999999;
     cursor: grab;
     display: none;
@@ -1112,6 +1115,16 @@ main,
     opacity: 1;
     transform: scale(1);
 }
+
+/* 🌟 CẤU HÌNH RIÊNG CHO ĐIỆN THOẠI: Giữ nguyên size to nhưng kéo sát lề */
+@media (max-width: 768px) {
+    .floating-envelope {
+        /* Kéo sát vào góc màn hình điện thoại hơn để tránh đè chữ */
+        bottom: 30px; 
+        right: 30px;  
+    }
+}
+
 
 /* Định dạng tấm ảnh PNG của bạn */
 .envelope-custom-img {
@@ -1541,10 +1554,28 @@ Khung cmt
     animation: buttonBurstEffect 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 
+/* ============================================
+Chỉ phóng to nút lên 75px khi người dùng dùng điện thoại 
+===================================*/
+@media (max-width: 768px) {
+    .floating-chat-btn {
+        width: 75px !important;
+        height: 75px !important;
+        gap: 4px !important;
+    }
+    .chat-btn-img {
+        width: 50% !important;
+        height: 50% !important;
+    }
+    .chat-btn-text {
+        font-size: 12px !important;
+    }
+}
 
 
-/* Định dạng các từ/ký hiệu nhỏ bắn ra */
-/* Định dạng các từ/ký hiệu nhỏ bắn ra - Bản Slow Motion bay cao */
+/* =====================================*/
+/* Định dạng các từ/ký hiệu nhỏ bắn ra - Bản Slow Motion bay cao 
+================================================ */
 .chat-pop-text {
     position: absolute;
     font-family: 'Segoe UI', Roboto, sans-serif;
@@ -1605,5 +1636,3 @@ Khung cmt
 .comment-overlay.hide-all-comments .bullet-comment {
     display: none !important;
 }
-
-
